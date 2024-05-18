@@ -1,9 +1,9 @@
 import { Sequelize } from "sequelize";
-import { sequelizeConnectoin } from "../db_settings.js";
+import { sequelizeConnection } from "../db_settings.js";
 import { UserModel } from "./User.js";
 import { ProjectModel } from "./Project.js";
 
-export const MemberModel = sequelizeConnectoin.define(
+export const MemberModel = sequelizeConnection.define(
     "Members", 
     {
         // foreign key

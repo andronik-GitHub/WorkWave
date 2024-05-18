@@ -1,5 +1,5 @@
 import { Op } from 'sequelize';
-import { sequelizeConnectoin } from '../db_settings.js';
+import { sequelizeConnection } from '../db_settings.js';
 import { SprintModel } from '../models/Sprint.js';
 
 

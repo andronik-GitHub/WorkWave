@@ -1,7 +1,7 @@
 import { Sequelize } from "sequelize";
-import { sequelizeConnectoin } from "../db_settings.js";
+import { sequelizeConnection } from "../db_settings.js";
 
-export const ProjectModel = sequelizeConnectoin.define(
+export const ProjectModel = sequelizeConnection.define(
     "Projects", 
     {
         projectId: {

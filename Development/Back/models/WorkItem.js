@@ -1,7 +1,7 @@
 import { Sequelize } from "sequelize";
-import { sequelizeConnectoin } from "../db_settings.js";
+import { sequelizeConnection } from "../db_settings.js";
 
-export const WorkItemModel = sequelizeConnectoin.define(
+export const WorkItemModel = sequelizeConnection.define(
     "WorkItems", 
     {
         workItemId: {

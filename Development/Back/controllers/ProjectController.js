@@ -1,4 +1,4 @@
-import { MemberModel, ProjectModel, UserModel } from "../models/index.js";
+import { ProjectModel, UserModel } from "../models/index.js";
 
 
 export const create = async (req, res) => {

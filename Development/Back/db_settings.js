@@ -2,7 +2,7 @@
 
 import { Sequelize } from "sequelize";
 
-export const sequelizeConnectoin = new Sequelize("WorkWave", "root", "nsWp1A04!$sDVzdV#f34", {
+export const sequelizeConnection = new Sequelize("WorkWave", "root", "nsWp1A04!$sDVzdV#f34", {
     dialect: "mysql",
     host: "localhost",
     define: {

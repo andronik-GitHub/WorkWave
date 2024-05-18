@@ -1,7 +1,7 @@
 import { Sequelize } from "sequelize";
-import { sequelizeConnectoin } from "../db_settings.js";
+import { sequelizeConnection } from "../db_settings.js";
 
-export const SprintModel = sequelizeConnectoin.define(
+export const SprintModel = sequelizeConnection.define(
     "Sprints", 
     {
         sprintId: {
