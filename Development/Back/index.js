@@ -1,5 +1,6 @@
 // npm run start:dev - npm install nodemon
 // mysql password: nsWp1A04!$sDVzdV#f34
+// send email: https://ethereal.email/messages
 
 import express from 'express';
 import multer from 'multer';

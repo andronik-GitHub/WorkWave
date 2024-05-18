@@ -2,6 +2,7 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import { PerformanceHistoryModel, ProjectModel, StateModel, UserModel, WorkItemModel } from '../models/index.js';
 import { Op } from 'sequelize';
+import nodemailer from 'nodemailer';
 
 
 export const getAll = async (req, res) => {
@@ -254,6 +255,76 @@ export const login = async (req, res) => {
         res.status(500).json({
             success: false,
             message: "Не вдалось авторизуватись"
+        });
+    }
+};
+
+export const resetPassword = async (req, res) => {
+    try {
+        const email = req.body.email;
+        if (!email) {
+            return res.status(404).json({
+                success: false,
+                message: 'Введіть електронну адресу'
+            });
+        }
+        
+        const user = await UserModel.findOne({ where: { email: req.body.email } });
+
+        if (!user) {
+            return res.status(400).json({
+                message: 'Не вірно введено електронну пошту'
+            });
+        }
+
+
+        let transporter = nodemailer.createTransport(
+            {
+                host: 'smtp.ethereal.email',
+                port: 587,
+                secure: false,
+                auth: {
+                    user: 'jeromy54@ethereal.email',
+                    pass: 'aB2eNunt9E2E66ad6k'
+                },
+                tls: {
+                    rejectUnauthorized: false // Add this to ignore self-signed certificate
+                }
+            },
+            {
+                from: 'jeromy54@ethereal.email',
+            }
+        );
+
+        let mailOptions = {
+            to: email,
+            subject: 'Test Email from Node.js',
+            html: 'For reset password go to link <a href="http://localhost:4444/auth/reset">http://localhost:4444/auth/reset</a>'
+        };
+
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                console.log(error);
+
+                return res.json({
+                    success: false,
+                    error
+                });
+            }
+
+            console.log('Email sent: ' + info.response);
+            return res.json({
+                success: true,
+                result: info.response
+            });
+        });
+    } 
+    catch (err) {
+        console.error("Errors: ", err);
+
+        res.status(500).json({
+            success: false,
+            message: "Не вдалось відновити пароль"
         });
     }
 };
