@@ -83,7 +83,7 @@ CREATE TABLE Tags (
 CREATE TABLE Comments (
 	CommentId CHAR(38) PRIMARY KEY DEFAULT(uuid()),
 	CommentText NVARCHAR(1000) NOT NULL,
-	CommentDate NVARCHAR(6) NOT NULL,
+	CommentDate DATETIME DEFAULT(now()),
 	UserId CHAR(38) NOT NULL,
 	WorkItemId CHAR(38) NOT NULL,
     

@@ -4,6 +4,7 @@
 import express from 'express';
 import multer from 'multer';
 import { sequelizeConnectoin } from './db_settings.js';
+import { handleValidationErrors, checkAuth } from "./utils/index.js";
 
 import { loginValidation, registrationValidation } from "./validations/auth.js";
 import { createProjectValidation, updateProjectValidation } from './validations/project.js';
@@ -12,9 +13,9 @@ import { createMemberValidation } from './validations/member.js';
 import { createPerformanceHistoryValidation, updatePerformanceHistoryValidation } from './validations/performanceHistory.js';
 import { createWorkItemValidation, updateWorkItemValidation } from './validations/workItem.js';
 import { createTagValidation, updateTagValidation } from './validations/tag.js';
+import { createCommentValidation, updateCommentValidation } from './validations/comment.js';
 import { updateUserValidation } from './validations/user.js';
 
-import { handleValidationErrors, checkAuth } from "./utils/index.js";
 import { 
     UserController, 
     ProjectController, 
@@ -22,7 +23,8 @@ import {
     MemberController,
     PerformanceHistoryController,
     WorkItemController,
-    TagController
+    TagController,
+    CommentController
 } from "./controllers/index.js";
 
 
@@ -116,6 +118,11 @@ app.patch('/tags/update', checkAuth, updateTagValidation, handleValidationErrors
 app.delete('/tags/:id', TagController.remove);
 
 // CRUD Comments
+app.get('/comments', CommentController.getAll);
+app.get('/comments/:id', CommentController.getById);
+app.post('/comments/create', checkAuth, createCommentValidation, handleValidationErrors, CommentController.create);
+app.patch('/comments/update', checkAuth, updateCommentValidation, handleValidationErrors, CommentController.update);
+app.delete('/comments/:id', CommentController.remove);
 
 
 app.listen(4444, async (err) => {
