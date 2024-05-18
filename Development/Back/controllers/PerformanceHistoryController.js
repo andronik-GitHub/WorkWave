@@ -161,3 +161,33 @@ export const remove = async (req, res) => {
         });
     }
 };
+
+export const getAllByProjectId = async (req, res) => {
+    try {
+        const projectId = req.params.id;
+        if (!projectId) {
+            return res.status(404).json({
+                success: false,
+                message: 'Введіть ідентифікатор проєкта'
+            });
+        }
+
+        const performanceHistories = await PerformanceHistoryModel.findAll({ 
+            raw: true, 
+            where: { projectId: projectId },
+            order: [
+                ['date', 'DESC']
+            ]
+        });
+
+        res.json(performanceHistories);
+    }
+    catch (err) {
+        console.error("Errors: ", err);
+
+        res.status(500).json({
+            success: false,
+            message: "Не вдалось переглянути історію діяльностей"
+        });
+    }
+};

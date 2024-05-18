@@ -1,5 +1,7 @@
 import { Sequelize } from "sequelize";
 import { sequelizeConnectoin } from "../db_settings.js";
+import { UserModel } from "./User.js";
+import { ProjectModel } from "./Project.js";
 
 export const MemberModel = sequelizeConnectoin.define(
     "Members", 
@@ -10,7 +12,7 @@ export const MemberModel = sequelizeConnectoin.define(
             allowNull: false,
             primaryKey: true, // primaryKey
             references: {
-                model: 'Users',
+                model: UserModel,
                 key: 'userId'
             }
         },
@@ -20,7 +22,7 @@ export const MemberModel = sequelizeConnectoin.define(
             allowNull: false,
             primaryKey: true, // primaryKey
             references: {
-                model: 'Projects',
+                model: ProjectModel,
                 key: 'projectId'
             }
         },

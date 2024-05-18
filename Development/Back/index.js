@@ -11,10 +11,7 @@ import { createProjectValidation, updateProjectValidation } from './validations/
 import { createSprintValidation, updateSprintValidation } from './validations/sprint.js';
 import { createMemberValidation } from './validations/member.js';
 import { createPerformanceHistoryValidation, updatePerformanceHistoryValidation } from './validations/performanceHistory.js';
-import { createWorkItemValidation, updateWorkItemValidation } from './validations/workItem.js';
 import { createTagValidation, updateTagValidation } from './validations/tag.js';
-import { createCommentValidation, updateCommentValidation } from './validations/comment.js';
-import { createStateValidation, updateStateValidation } from './validations/state.js';
 import { updateUserValidation } from './validations/user.js';
 
 import { 
@@ -23,11 +20,12 @@ import {
     SprintController, 
     MemberController,
     PerformanceHistoryController,
-    WorkItemController,
-    TagController,
-    CommentController,
-    StateController
+    TagController
 } from "./controllers/index.js";
+
+import stateRouter from './routes/stateRouter.js';
+import commentRouter from './routes/commentRouter.js';
+import workItemRouter from './routes/workItemRouter.js';
 
 
 
@@ -59,6 +57,10 @@ app.post('/upload', upload.single('image'), (req, res) => {
 app.post('/auth/login', loginValidation, handleValidationErrors, UserController.login);
 app.post('/auth/registration', registrationValidation, handleValidationErrors, UserController.register);
 app.get('/auth/me', checkAuth, UserController.getMe);
+app.get('/auth/my-projects', checkAuth, UserController.getMyProjects);
+app.get('/auth/count-active-users-today/:id', checkAuth, UserController.getActiveUsersCountToday);
+app.get('/auth/items-assigned-me', checkAuth, UserController.getItemsAssignedMe);
+app.get('/auth/completion-percentage/:id', checkAuth, UserController.getCompletionPercentage);
 
 // CRUD Users
 app.get('/users', UserController.getAll);
@@ -73,12 +75,19 @@ app.post('/projects/create', checkAuth, createProjectValidation, handleValidatio
 app.delete('/projects/:id', checkAuth, ProjectController.remove);
 app.patch('/projects/update', checkAuth, updateProjectValidation, handleValidationErrors, ProjectController.update);
 
+app.get('/projects/members-count-by-projectId/:id', checkAuth, ProjectController.getMembersByProjectId);
+
 // CRUD Sprints
 app.get('/sprints', SprintController.getAll);
 app.get('/sprints/:id', SprintController.getById);
 app.post('/sprints/create', checkAuth, createSprintValidation, handleValidationErrors, SprintController.create);
 app.patch('/sprints/update', checkAuth, updateSprintValidation, handleValidationErrors, SprintController.update);
 app.delete('/sprints/:id', checkAuth, SprintController.remove);
+
+app.get('/sprints/count-in-project/:id', checkAuth, SprintController.getCountByProjectId);
+app.get('/sprints/count-done-in-project/:id', checkAuth, SprintController.getCountOfDoneByProjectId);
+app.get('/sprints/active-sprint/:id', checkAuth, SprintController.getActiveSprint);
+app.get('/sprints/by-project/:id', checkAuth, SprintController.getSprintsByProject);
 
 // CRD Members
 app.get('/members', MemberController.getAll);
@@ -105,12 +114,8 @@ app.patch(
 );
 app.delete('/performance-histories/:id', checkAuth, PerformanceHistoryController.remove);
 
-// CRUD WorkItems
-app.get('/work-items', WorkItemController.getAll);
-app.get('/work-items/:id', WorkItemController.getById);
-app.post('/work-items/create', checkAuth, createWorkItemValidation, handleValidationErrors, WorkItemController.create);
-app.patch('/work-items/update', checkAuth, updateWorkItemValidation, handleValidationErrors, WorkItemController.update);
-app.delete('/work-items/:id', WorkItemController.remove);
+app.get('/performance-histories/by-project/:id', checkAuth, PerformanceHistoryController.getAllByProjectId);
+
 
 // CRUD Tags
 app.get('/tags', TagController.getAll);
@@ -119,19 +124,10 @@ app.post('/tags/create', checkAuth, createTagValidation, handleValidationErrors,
 app.patch('/tags/update', checkAuth, updateTagValidation, handleValidationErrors, TagController.update);
 app.delete('/tags/:id', TagController.remove);
 
-// CRUD Comments
-app.get('/comments', CommentController.getAll);
-app.get('/comments/:id', CommentController.getById);
-app.post('/comments/create', checkAuth, createCommentValidation, handleValidationErrors, CommentController.create);
-app.patch('/comments/update', checkAuth, updateCommentValidation, handleValidationErrors, CommentController.update);
-app.delete('/comments/:id', CommentController.remove);
 
-// CRUD States
-app.get('/states', StateController.getAll);
-app.get('/states/:id', StateController.getById);
-app.post('/states/create', checkAuth, createStateValidation, handleValidationErrors, StateController.create);
-app.patch('/states/update', checkAuth, updateStateValidation, handleValidationErrors, StateController.update);
-app.delete('/states/:id', StateController.remove);
+app.use('/work-items', workItemRouter);
+app.use('/comments', commentRouter);
+app.use('/states', stateRouter);
 
 
 app.listen(4444, async (err) => {
@@ -142,10 +138,10 @@ app.listen(4444, async (err) => {
     try {
         await sequelizeConnectoin.authenticate();
         console.log("DB OK");
+
+        console.log('Server OK');
     }
     catch (error) {
         console.error("Unable to connect to the database: ", error);
     }
-
-    console.log('Server OK');
 });

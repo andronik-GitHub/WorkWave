@@ -54,11 +54,6 @@ export const WorkItemModel = sequelizeConnectoin.define(
             type: Sequelize.STRING(1000),
             allowNull: false
         },
-        state: {
-            type: Sequelize.STRING(50),
-            defaultValue: 'New',
-            allowNull: false
-        },
         createDate: {
             type: Sequelize.DATE,
             defaultValue: Sequelize.NOW,

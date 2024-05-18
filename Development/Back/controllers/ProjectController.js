@@ -1,4 +1,4 @@
-import { ProjectModel } from "../models/index.js";
+import { MemberModel, ProjectModel, UserModel } from "../models/index.js";
 
 
 export const create = async (req, res) => {
@@ -154,6 +154,52 @@ export const update = async (req, res) => {
         res.status(500).json({
             success: false,
             message: "Не вдалось обновити проєкт"
+        });
+    }
+};
+
+
+export const getMembersByProjectId = async (req, res) => {
+    try {
+        const projectId = req.params.id;
+        if (!projectId) {
+            return res.status(404).json({
+                success: false,
+                message: 'Введіть ідентифікатор проєкта'
+            });
+        }
+
+        // Отримати список учасників для заданого проекту
+        const members = await ProjectModel.findAll({
+            where: { projectId: projectId },
+            include: [{ 
+                model: UserModel,
+                attributes: [] 
+            }],
+            raw: true,
+        });
+
+        if (!members) {
+            return res.status(404).json({
+                success: false,
+                message: 'Учасники не знайдені'
+            });
+        }
+
+        // Отримати кількість учасників
+        const count = members.length;
+
+        res.json({
+            success: true,
+            count,
+            members
+        });
+    } catch (err) {
+        console.error("Errors: ", err);
+
+        res.status(500).json({
+            success: false,
+            message: "Не вдалось отримати учасників проєкта"
         });
     }
 };

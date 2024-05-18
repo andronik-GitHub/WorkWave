@@ -89,6 +89,12 @@ export const remove = async (req, res) => {
                 message: 'Стан не знайдений'
             });
         }
+        else if ((state.title + "").toLowerCase() === 'new') {
+            return res.status(400).json({
+                success: false,
+                message: 'Видалення стану заборонено'
+            });
+        }
 
         const result = await state.destroy();
         if (!result) {
@@ -130,6 +136,12 @@ export const update = async (req, res) => {
                 message: 'Стан не знайдений'
             });
         }
+        else if ((state.title + "").toLowerCase() === 'new') {
+            return res.status(400).json({
+                success: false,
+                message: 'Редагування стану заборонено'
+            });
+        }
 
         state.title = req.body.title;
         state.projectId = req.body.projectId;
@@ -154,6 +166,32 @@ export const update = async (req, res) => {
         res.status(500).json({
             success: false,
             message: "Не вдалось обновити стан"
+        });
+    }
+};
+
+
+
+export const getAllByProject = async (req, res) => {
+    try {
+        const projectId = req.params.id;
+        if (!projectId) {
+            return res.status(404).json({
+                success: false,
+                message: 'Введіть ідентифікатор робочого елемента'
+            });
+        }
+
+        const states = await StateModel.findAll({ raw: true, where: { projectId: projectId } });
+
+        res.json(states);
+    }
+    catch (err) {
+        console.error("Errors: ", err);
+
+        res.status(500).json({
+            success: false,
+            message: "Не вдалось переглянути стани"
         });
     }
 };
