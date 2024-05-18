@@ -14,6 +14,7 @@ import { createPerformanceHistoryValidation, updatePerformanceHistoryValidation 
 import { createWorkItemValidation, updateWorkItemValidation } from './validations/workItem.js';
 import { createTagValidation, updateTagValidation } from './validations/tag.js';
 import { createCommentValidation, updateCommentValidation } from './validations/comment.js';
+import { createStateValidation, updateStateValidation } from './validations/state.js';
 import { updateUserValidation } from './validations/user.js';
 
 import { 
@@ -24,7 +25,8 @@ import {
     PerformanceHistoryController,
     WorkItemController,
     TagController,
-    CommentController
+    CommentController,
+    StateController
 } from "./controllers/index.js";
 
 
@@ -123,6 +125,13 @@ app.get('/comments/:id', CommentController.getById);
 app.post('/comments/create', checkAuth, createCommentValidation, handleValidationErrors, CommentController.create);
 app.patch('/comments/update', checkAuth, updateCommentValidation, handleValidationErrors, CommentController.update);
 app.delete('/comments/:id', CommentController.remove);
+
+// CRUD States
+app.get('/states', StateController.getAll);
+app.get('/states/:id', StateController.getById);
+app.post('/states/create', checkAuth, createStateValidation, handleValidationErrors, StateController.create);
+app.patch('/states/update', checkAuth, updateStateValidation, handleValidationErrors, StateController.update);
+app.delete('/states/:id', StateController.remove);
 
 
 app.listen(4444, async (err) => {

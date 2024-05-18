@@ -56,6 +56,7 @@ export const create = async (req, res) => {
             userId: req.body.userId,
             projectId: req.body.projectId,
             sprintId: req.body.sprintId,
+            stateId: req.body.stateId,
             title: req.body.title,
             description: req.body.description,
             state: req.body.state,
@@ -97,6 +98,7 @@ export const update = async (req, res) => {
         workItem.userId = req.body.userId;
         workItem.projectId = req.body.projectId;
         workItem.sprintId = req.body.sprintId;
+        workItem.stateId = req.body.stateId,
         workItem.title = req.body.title;
         workItem.description = req.body.description;
         workItem.state = req.body.state;

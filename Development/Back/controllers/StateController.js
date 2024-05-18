@@ -1,0 +1,159 @@
+import { StateModel } from '../models/State.js';
+
+
+export const getAll = async (req, res) => {
+    try {
+        const states = await StateModel.findAll({ raw: true });
+
+        res.json(states);
+    }
+    catch (err) {
+        console.error("Errors: ", err);
+
+        res.status(500).json({
+            success: false,
+            message: "Не вдалось переглянути стани"
+        });
+    }
+};
+
+export const getById = async (req, res) => {
+    try {
+        const stateId = req.params.id;
+        if (!stateId) {
+            return res.status(404).json({
+                success: false,
+                message: 'Введіть ідентифікатор стана'
+            });
+        }
+
+        const state = await StateModel.findOne({ where: { stateId: stateId } });
+        if (!state) {
+            return res.status(404).json({
+                success: false,
+                message: 'Стан не знайдений'
+            });
+        }
+
+        res.json({
+            success: true,
+            state
+        });
+    }
+    catch (err) {
+        console.error("Errors: ", err);
+
+        res.status(500).json({
+            success: false,
+            message: "Не вдалось знайти стан"
+        });
+    }
+};
+
+export const create = async (req, res) => {
+    try {
+        const state = await StateModel.create({
+            title: req.body.title,
+            projectId: req.body.projectId
+        });
+
+        res.json({
+            success: true,
+            state
+        });
+    }
+    catch(err) {
+        console.error("Errors: ", err);
+
+        res.status(500).json({
+            success: false,
+            message: "Не вдалось створити стан"
+        });
+    }
+};
+
+export const remove = async (req, res) => {
+    try {
+        const stateId = req.params.id;
+        if (!stateId) {
+            return res.status(404).json({
+                success: false,
+                message: 'Введіть ідентифікатор стана'
+            });
+        }
+
+        const state = await StateModel.findOne({ where: { stateId: stateId } });
+        if (!state) {
+            return res.status(404).json({
+                success: false,
+                message: 'Стан не знайдений'
+            });
+        }
+
+        const result = await state.destroy();
+        if (!result) {
+            return res.status(404).json({
+                success: false,
+                message: 'Не вдалось видалити стан'
+            });
+        }
+
+        res.json({
+            success: true,
+            message: 'Стан успішно видалено'
+        });
+    }
+    catch (err) {
+        console.error("Errors: ", err);
+
+        res.status(500).json({
+            success: false,
+            message: "Не вдалось знайти Стан"
+        });
+    }
+};
+
+export const update = async (req, res) => {
+    try {
+        const stateId = req.body.stateId;
+        if (!stateId) {
+            return res.status(404).json({
+                success: false,
+                message: 'Введіть ідентифікатор стана'
+            });
+        }
+
+        const state = await StateModel.findOne({ where: { stateId: stateId } });
+        if (!state) {
+            return res.status(404).json({
+                success: false,
+                message: 'Стан не знайдений'
+            });
+        }
+
+        state.title = req.body.title;
+        state.projectId = req.body.projectId;
+        state.updateDate = Date.now();
+        
+        const result = await state.save();
+        if (!result) {
+            return res.status(404).json({
+                success: false,
+                message: 'Не вдалось обновити стан'
+            });
+        }
+
+        res.json({
+            success: true,
+            state
+        });
+    }
+    catch (err) {
+        console.error("Errors: ", err);
+
+        res.status(500).json({
+            success: false,
+            message: "Не вдалось обновити стан"
+        });
+    }
+};

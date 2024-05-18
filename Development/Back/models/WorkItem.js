@@ -37,6 +37,15 @@ export const WorkItemModel = sequelizeConnectoin.define(
                 key: 'sprintId'
             }
         },
+        // foreign key
+        stateId: {
+            type: Sequelize.STRING(38),
+            allowNull: false,
+            references: {
+                model: 'States',
+                key: 'stateId'
+            }
+        },
         title: {
             type: Sequelize.STRING(100),
             allowNull: false

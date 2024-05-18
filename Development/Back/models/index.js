@@ -6,6 +6,7 @@ import { UserModel } from "./User.js";
 import { WorkItemModel } from "./WorkItem.js";
 import { TagModel } from "./Tag.js";
 import { CommentModel } from "./Models.js";
+import { StateModel } from "./State.js";
 
 // one-to-many - Projects-to-Sprints
 ProjectModel.hasMany(SprintModel, { foreignKey: 'projectId' });
@@ -47,6 +48,14 @@ CommentModel.belongsTo(UserModel, { foreignKey: 'userId' });
 WorkItemModel.hasMany(CommentModel, { foreignKey: 'workItemId' });
 CommentModel.belongsTo(WorkItemModel, { foreignKey: 'workItemId' });
 
+// one-to-many - Projects-to-States
+ProjectModel.hasMany(StateModel, { foreignKey: 'projectId' });
+StateModel.belongsTo(ProjectModel, { foreignKey: 'projectId' });
+
+// one-to-many - States-to-WorkItems
+StateModel.hasMany(WorkItemModel, { foreignKey: 'stateId' });
+WorkItemModel.belongsTo(StateModel, { foreignKey: 'stateId' });
+
 
 export {
     ProjectModel, 
@@ -56,5 +65,6 @@ export {
     PerformanceHistoryModel, 
     WorkItemModel,
     TagModel,
-    CommentModel
+    CommentModel,
+    StateModel
 }

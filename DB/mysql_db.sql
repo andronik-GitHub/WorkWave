@@ -24,6 +24,16 @@ CREATE TABLE Projects (
     UpdateDate DATETIME
 );
 
+CREATE TABLE States (
+	StateId CHAR(38) NOT NULL PRIMARY KEY DEFAULT(uuid()),
+	Title NVARCHAR(20) UNIQUE NOT NULL,
+	ProjectId CHAR(38) NOT NULL, 
+	FOREIGN KEY (ProjectId) REFERENCES Projects(ProjectId),
+    
+	CreateDate DATETIME DEFAULT(now()),
+    UpdateDate DATETIME
+);
+
 CREATE TABLE Sprints (
 	SprintId CHAR(38) PRIMARY KEY DEFAULT(uuid()),
 	ProjectId CHAR(38) NOT NULL, 
@@ -41,11 +51,12 @@ CREATE TABLE WorkItems (
 	WorkItemId CHAR(38) PRIMARY KEY DEFAULT(uuid()),
 	Title NVARCHAR(100) NOT NULL,
 	`Description` NVARCHAR(1000) NOT NULL,
-	`State` NVARCHAR(50) NOT NULL DEFAULT('New'),
+	StateId CHAR(38) NOT NULL, 
 	ProjectId CHAR(38) NOT NULL, 
 	UserId CHAR(38) NOT NULL, 
 	SprintId CHAR(38) NOT NULL, 
     
+    FOREIGN KEY (StateId) REFERENCES States(StateId),
     FOREIGN KEY (ProjectId) REFERENCES Projects(ProjectId),
     FOREIGN KEY (UserId) REFERENCES Users(UserId),
     FOREIGN KEY (SprintId) REFERENCES Sprints(SprintId),
