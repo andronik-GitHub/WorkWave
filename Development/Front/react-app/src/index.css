@@ -1,0 +1,30 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@700&display=swap');
+
+html,
+body,
+#root,
+.app,
+.content {
+    height: 100%;
+    width: 100%;
+    font-family: 'Roboto Slab', sans-serif;
+    font-weight: bold;
+}
+
+.app {
+    display: flex;
+    position: relative;
+}
+
+a {
+  text-decoration: none;
+}
+
+::placeholder {
+    color: #C3C8D4;
+    opacity: 1; /* Firefox */
+  }
+  
+::-ms-input-placeholder { /* Edge 12 -18 */
+  color: #C3C8D4;
+}

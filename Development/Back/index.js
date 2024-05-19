@@ -5,6 +5,7 @@
 import express from 'express';
 import multer from 'multer';
 import { sequelizeConnection } from './db_settings.js';
+import cors from 'cors';
 
 import stateRouter from './routes/stateRouter.js';
 import commentRouter from './routes/commentRouter.js';
@@ -32,6 +33,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 app.use(express.json());
+app.use(cors());
 app.use('/uploads', express.static('uploads'));
 
 app.post('/upload', upload.single('image'), (req, res) => {
