@@ -19,6 +19,9 @@ body,
 a {
   text-decoration: none;
 }
+a:hover {
+  text-decoration: underline;
+}
 
 ::placeholder {
     color: #C3C8D4;

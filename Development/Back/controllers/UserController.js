@@ -133,9 +133,9 @@ export const update = async (req, res) => {
         const salt = await bcrypt.genSalt(10);
         const hash = await bcrypt.hash(password, salt);
 
-        user.email = req.body.email;
-        user.passwordHash = hash;
-        user.userName = req.body.userName;
+        user.email = req.body.email ?? user.email;
+        user.passwordHash = hash ?? user.passwordHash;
+        user.userName = req.body.userName ?? user.userName;
         user.profileImage_Path = req.body.profileImage_Path ?? user.profileImage_Path;
         user.updateDate = Date.now();
 
@@ -178,7 +178,7 @@ export const register = async (req, res) => {
         const user = await UserModel.create({
             email: req.body.email,
             passwordHash: hash,
-            userName: req.body.userName,
+            userName: (req.body.email + "").split('@')[0],
             profileImage_Path: req.body.profileImage_Path
         });
 
@@ -262,6 +262,7 @@ export const login = async (req, res) => {
 export const resetPassword = async (req, res) => {
     try {
         const email = req.body.email;
+        console.log(req.params);
         if (!email) {
             return res.status(404).json({
                 success: false,
@@ -284,22 +285,27 @@ export const resetPassword = async (req, res) => {
                 port: 587,
                 secure: false,
                 auth: {
-                    user: 'jeromy54@ethereal.email',
-                    pass: 'aB2eNunt9E2E66ad6k'
+                    user: 'savion.conn28@ethereal.email',
+                    pass: 'HMyDMrx2EpmNMDG7e5'
                 },
                 tls: {
                     rejectUnauthorized: false // Add this to ignore self-signed certificate
                 }
             },
             {
-                from: 'jeromy54@ethereal.email',
+                from: 'savion.conn28@ethereal.email',
             }
         );
 
         let mailOptions = {
             to: email,
             subject: 'Test Email from Node.js',
-            html: 'For reset password go to link <a href="http://localhost:4444/auth/reset">http://localhost:4444/auth/reset</a>'
+            html: `
+            <form action="/reset-continue" method="post">
+            <input type="hidden" name="email" value="${email}"/>
+            For reset password go to <a href="http://localhost:3000/reset-continue">link</a>
+            </form>
+            `
         };
 
         transporter.sendMail(mailOptions, (error, info) => {

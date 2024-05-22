@@ -22,6 +22,12 @@ const HomePage = () => {
                     <Typography>Login</Typography>
                 </Link>
             </MenuItem>
+            
+            <MenuItem>
+                <Link to={'/projects'} style={{ color: colors.white[500] }}>
+                    <Typography>Projects</Typography>
+                </Link>
+            </MenuItem>
         </Box>
     );
 }

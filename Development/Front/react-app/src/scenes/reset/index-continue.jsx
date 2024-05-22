@@ -1,17 +1,18 @@
-import { Box, MenuItem, TextField, Typography, useTheme } from "@mui/material";
+import { Box, TextField, Typography } from "@mui/material";
 import { ColorModeContext, tokens } from "../../theme";
-import React, { useContext, useState } from "react";
+import { useTheme } from "@emotion/react";
+import { useContext, useState } from "react";
+import { useForm } from "react-hook-form";
 import { Link, Navigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 
 import closeEye from '../../img/password-close-icon.svg';
 import openEye from '../../img/password-open-icon.svg';
 
-import { useForm } from "react-hook-form";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchRegistration, selectIsAuth } from "../../redux/slices/auth";
+import { fetchUpdate, selectIsAuth } from "../../redux/slices/auth";
 
 
-const Registration = () => {
+const ResetContinue = () => {
     const isAuth = useSelector(selectIsAuth);
     const dispatch = useDispatch();
 
@@ -24,34 +25,25 @@ const Registration = () => {
         }
     } = useForm({
         defaultValues: {
-            email: '',
-            password: '',
+            password: '12345',
         },
         mode: 'all',
     });
 
-    const [isContinue, setContinue] = useState(false);
-    const [showPassword, setShowPassword] = useState(false);
-
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     const colorMode = useContext(ColorModeContext);
+    
+    const [isContinue, setContinue] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+    
 
     const onSubmit = async (values) => {
-        const data = await dispatch(fetchRegistration(values));
+        const data = await dispatch(fetchUpdate(values));
         
         if (!data.payload)
-            return alert(`Не вдалось зареєструватись`);
-
-        if ('toke' in data.payload) {
-            window.localStorage.setItem('token', data.payload.token);
-        }
-        else {
-            return alert('Не вдалось зареєструватись');
-        }
+            return alert('Не вдалось відновити пароль');
     };
-
-    if (isAuth) return <Navigate to='/projects' />;
 
     return (
         <Box sx={{
@@ -68,13 +60,13 @@ const Registration = () => {
                 alignItems: 'center',
                 justifyContent: 'center',
                 paddingBottom: '20px',
-                minHeight: isContinue ? '600px' : '500px',
+                minHeight: !isContinue ? '400px' : '480px',
                 width: '400px',
                 backgroundColor: colors.midnightStone[500],
                 borderRadius: '10px',
                 boxShadow: '0px 15px 25px 15px rgba(0, 0, 0, 0.25)',
             }}>
-                <Typography variant="h4" align="center" sx={{ margin: '70px 0 50px 0'} }>Registration</Typography>
+                <Typography variant="h4" align="center" sx={{ margin: '70px 0 50px 0'} }>Reset password</Typography>
 
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <Box sx={{
@@ -82,31 +74,10 @@ const Registration = () => {
                         flexDirection: "column",
                         alignItems: 'center',
                         justifyContent: 'space-between',
-                        height: isContinue ? '155px' : '60px'
+                        height: '155px',
                     }}>
-                        <TextField 
-                            type="email" 
-                            placeholder="Email" 
-                            error={Boolean(errors.email?.message)}
-                            helperText={errors.email?.message}
-                            {...register('email', { required: 'Вкажіть пошту'})}
-                            style={{
-                                padding: '0px',
-                                border: '0',
-                                backgroundColor: colors.nightfall[[500]],
-                                fontSize: 18,
-                                color: colors.white[500],
-                                width: '350px',
-                                height: '60px',
-                                borderRadius: '10px',
-                                fontFamily: 'Roboto Slab, sans-serif',
-                                fontWeight: 'bold'
-                            }} 
-                        />
-                        
                         <Box sx={{
                                 position: 'relative', 
-                                display: isContinue ? 'inline-block' : 'none'
                             }}
                         >
                             <TextField 
@@ -129,7 +100,39 @@ const Registration = () => {
                                 }} 
                             />
                             <img 
-                                alt="Show password image"
+                                style={{ position: 'absolute', right: 0, margin: '16px'}}
+                                height='25' 
+                                width='25' 
+                                backgroundColor={colors.white[500]} 
+                                onClick={() => !showPassword ? setShowPassword(true): setShowPassword(false)} 
+                                src={showPassword ? closeEye : openEye} 
+                            />
+                        </Box>
+
+                        <Box sx={{
+                                position: 'relative', 
+                            }}
+                        >
+                            <TextField 
+                                type={ showPassword ? "text" : "password" } 
+                                placeholder="Confirm Password" 
+                                error={Boolean(errors.password?.message)}
+                                helperText={errors.password?.message}
+                                {...register('confirmPassword', { required: 'Підтвердіть пароль'})}
+                                style={{
+                                    padding: '0px',
+                                    border: '0',
+                                    backgroundColor: colors.nightfall[[500]],
+                                    fontSize: 18,
+                                    color: colors.white[500],
+                                    width: '350px',
+                                    height: '60px',
+                                    borderRadius: '10px',
+                                    fontFamily: 'Roboto Slab, sans-serif',
+                                    fontWeight: 'bold'
+                                }} 
+                            />
+                            <img 
                                 style={{ position: 'absolute', right: 0, margin: '16px'}}
                                 height='25' 
                                 width='25' 
@@ -141,7 +144,7 @@ const Registration = () => {
                     </Box>
 
                     <input 
-                        onClick={() => !isContinue ? setContinue(true) : isContinue}
+                        onClick={() => !isContinue ? setContinue(true) : <Navigate to='/login' />}
                         type="submit" 
                         value="Continue"
                         style={{
@@ -162,20 +165,19 @@ const Registration = () => {
                 </form>
 
                 <Box>
-                    <Typography style={{ fontSize: 12, width: '210px', textAlign: 'center', marginBottom: '50px' }}>
-                        By registration up you accept the 
-                        <Link to='/' style={{ color: colors.azureBlaze[500]}}> Terms of service </Link> 
-                        and 
-                        <Link to='/' style={{ color: colors.azureBlaze[500]}}> Privacy policy</Link>
-                        </Typography>
+                    <Typography style={{ fontSize: 12 }}>
+                        Don't have an account?
+                        <Link to='/registration' style={{ color: colors.azureBlaze[500]}}> Register</Link>
+                    </Typography>
+                    
                     <Typography style={{ fontSize: 12 }}>
                         Already have an account?
                         <Link to='/login' style={{ color: colors.azureBlaze[500]}}> Log in</Link>
-                        </Typography>
+                    </Typography>
                 </Box>
             </Box>
         </Box>
     );
 }
 
-export default Registration;
+export default ResetContinue;
