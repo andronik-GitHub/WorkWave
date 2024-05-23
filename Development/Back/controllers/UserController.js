@@ -183,13 +183,9 @@ export const register = async (req, res) => {
         });
 
         const token = jwt.sign(
-            {
-                userId: user.userId
-            },
+            { userId: user.userId },
             "HL34HO20ACO020HBNDPQ103J8NCOP",
-            {
-                expiresIn: "30d",
-            },
+            { expiresIn: "30d" },
         );
 
         const userWithoutPassword = user.toJSON();
