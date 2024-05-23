@@ -191,10 +191,10 @@ export const register = async (req, res) => {
         const userWithoutPassword = user.toJSON();
         delete userWithoutPassword.passwordHash;
 
-        res.json({
-            success: true,
-            user: userWithoutPassword,
-            token
+        res.json({ 
+            success: true, 
+            user: userWithoutPassword, 
+            token 
         });
     }
     catch(err) {
@@ -428,7 +428,7 @@ export const getActiveUsersCountToday = async (req, res) => {
 
 export const getItemsAssignedMe = async (req, res) => {
     try {
-        // Отримання ідентифікатора поточного користувача з запиту (припустимо, що користувача ідентифікатор зберігається в полі userId запиту)
+        // Отримання ідентифікатора поточного користувача з запиту
         const userId = req.userId;
 
         // Запит до бази даних для отримання робочих елементів, призначених поточному користувачеві
